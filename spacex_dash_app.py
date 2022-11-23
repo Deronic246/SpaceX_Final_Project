@@ -54,6 +54,7 @@ Output(component_id='success-pie-chart', component_property='figure'),
 Input(component_id='site-dropdown', component_property='value'))
 def get_pie_chart(site):
     df = spacex_df
+    print(f'Site is {site}')
     if site == 'ALL':
         df = df[df['class'] == 1]
         df = df.groupby(['Launch Site','class']).size().reset_index(name='all_class_count')
@@ -62,9 +63,8 @@ def get_pie_chart(site):
         title='Total Success Launches by Site')
          
     else:
-        df = spacex_df[spacex_df['Launch Site'] == entered_site]
-        df = df.groupby(['Launch Site','class']).size().reset_index(name='Count_of_Classes')
-        return px.pie(df, values='Count_of_Classes',names='class',title=f"Total Success Launches for site {entered_site}")
+        df  = spacex_df.loc[spacex_df['Launch Site'] == site]
+        return px.pie(df, names='class',title=f"Total Success Launches for site {site}")
         
 # TASK 4:
 @app.callback(
@@ -80,7 +80,7 @@ def get_scatter_chart(site, payload):
         color='Booster Version Category')
        
     else:
-        df = spacex_df.loc[spacex_df['Launch Site'] == entered_site]
+        df = spacex_df.loc[spacex_df['Launch Site'] == site]
         df = df[(df['Payload Mass (kg)'] >= payload[0]) &
         (df['Payload Mass (kg)']<= payload[1])]
         return px.scatter(data_frame=df,x='Payload Mass (kg)',y='class',
